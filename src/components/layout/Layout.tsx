@@ -6,7 +6,7 @@ export default function Layout() {
     const navigate = useNavigate();
     const { mutate: logout } = useLogout({
         onSuccess: () => {
-            navigate("/login");
+            navigate("/auth");
         },
     });
     const { isAuthenticated } = useAuth();

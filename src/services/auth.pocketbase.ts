@@ -31,10 +31,37 @@ export interface RegisterPayload {
     passwordConfirm: string;
 }
 
+export interface OAuthLoginPayload {
+    provider: string;
+}
+
 export const authService = {
     async login(payload: LoginPayload): Promise<AuthResponse> {
         try {
             const authData = await pb.collection("users").authWithPassword(payload.email, payload.password);
+            return {
+                success: true,
+                token: authData.token,
+            };
+        } catch (error) {
+            if (error instanceof ClientResponseError) {
+                return {
+                    success: false,
+                    error: error.message || "Email ou mot de passe incorrect",
+                };
+            }
+            return {
+                success: false,
+                error: "Une erreur inattendue est survenue",
+            };
+        }
+    },
+
+    async oAuthLogin(payload: OAuthLoginPayload): Promise<AuthResponse> {
+        try {
+            const authData = await pb.collection("users").authWithOAuth2({
+                provider: payload.provider,
+            });
             return {
                 success: true,
                 token: authData.token,

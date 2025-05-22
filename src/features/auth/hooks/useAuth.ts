@@ -13,6 +13,16 @@ export const useLogin = () => {
     });
 };
 
+export const useOAuthLogin = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: authService.oAuthLogin,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: authQueryKey });
+        },
+    });
+};
+
 export const useRegister = () => {
     const queryClient = useQueryClient();
     return useMutation({

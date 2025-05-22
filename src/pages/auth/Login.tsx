@@ -1,8 +1,10 @@
-import { useLogin, useRegister } from "@/features/auth/hooks/useAuth";
+import { GoogleButton } from "@/features/auth/components/GoogleButton";
+import { useLogin, useOAuthLogin, useRegister } from "@/features/auth/hooks/useAuth";
 import {
     Anchor,
     Button,
     Container,
+    Divider,
     Group,
     Paper,
     type PaperProps,
@@ -19,6 +21,7 @@ export default function Auth(props: PaperProps) {
     const navigate = useNavigate();
     const { mutate: login } = useLogin();
     const { mutate: register } = useRegister();
+    const { mutate: oAuthLogin } = useOAuthLogin();
     const [type, toggle] = useToggle(["login", "register"]);
     const form = useForm({
         initialValues: {
@@ -69,6 +72,12 @@ export default function Auth(props: PaperProps) {
                     {upperFirst(type)}
                 </Text>
                 <Space h="md" />
+                <Group justify="center">
+                    <GoogleButton onClick={() => oAuthLogin({ provider: "google" })} radius="xl">
+                        Google
+                    </GoogleButton>
+                </Group>
+                <Divider label="Or continue with email" labelPosition="center" my="lg" />
                 <form onSubmit={form.onSubmit(handleSubmit)}>
                     <Stack>
                         {type === "register" && (
