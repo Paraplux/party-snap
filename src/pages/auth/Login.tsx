@@ -1,3 +1,4 @@
+import { useLogin, useRegister } from "@/features/auth/hooks/useAuth";
 import {
     Anchor,
     Button,
@@ -13,9 +14,11 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { upperFirst, useToggle } from "@mantine/hooks";
-import { authService } from "@services/auth.pocketbase";
-
+import { useNavigate } from "react-router";
 export default function Auth(props: PaperProps) {
+    const navigate = useNavigate();
+    const { mutate: login } = useLogin();
+    const { mutate: register } = useRegister();
     const [type, toggle] = useToggle(["login", "register"]);
     const form = useForm({
         initialValues: {
@@ -36,23 +39,23 @@ export default function Auth(props: PaperProps) {
     const handleSubmit = async (values: typeof form.values) => {
         if (type === "register") {
             try {
-                const response = await authService.register({
+                register({
                     name: values.name,
                     email: values.email,
                     password: values.password,
                     passwordConfirm: values.passwordConfirm,
                 });
-                console.log(response);
+                navigate("/");
             } catch (error) {
                 console.error(error);
             }
         } else {
             try {
-                const response = await authService.login({
+                login({
                     email: values.email,
                     password: values.password,
                 });
-                console.log(response);
+                navigate("/");
             } catch (error) {
                 console.error(error);
             }

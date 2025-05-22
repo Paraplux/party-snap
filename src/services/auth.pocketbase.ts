@@ -80,7 +80,19 @@ export const authService = {
     },
 
     logout() {
-        pb.authStore.clear();
+        return new Promise<AuthResponse>((resolve) => {
+            try {
+                pb.authStore.clear();
+                resolve({
+                    success: true,
+                });
+            } catch (error) {
+                resolve({
+                    success: false,
+                    error: "Une erreur inattendue est survenue",
+                });
+            }
+        });
     },
 
     isAuthenticated(): boolean {
