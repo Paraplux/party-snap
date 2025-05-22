@@ -1,5 +1,6 @@
 import { config } from "@/app/config";
-import { useAddPhotos, usePhotos } from "@/features/photos/hooks/usePhotos";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAddPhotos, useAllPhotos, usePhotos } from "@/features/photos/hooks/usePhotos";
 import { Box, Button, Card, Divider, Group, Loader, Space, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
@@ -8,13 +9,19 @@ interface FormValues {
 }
 
 export default function Home() {
+    const { getCurrentUser } = useAuth();
+    const user = getCurrentUser();
     const form = useForm<FormValues>({
         initialValues: {
             files: [],
         },
     });
 
-    const { data: photos, isLoading } = usePhotos();
+    const { data: photos, isLoading: isLoadingPhotos } = usePhotos({
+        userId: user?.id,
+        eventId: "652eo4n4309frgu",
+    });
+    const { data: allPhotos, isLoading: isLoadingAllPhotos } = useAllPhotos();
     const { mutate: addPhotos } = useAddPhotos({
         onSuccess: () => {
             form.reset();
@@ -35,10 +42,6 @@ export default function Home() {
         addPhotos(photosToAdd);
     };
 
-    if (!photos || isLoading) {
-        return <Loader />;
-    }
-
     return (
         <Box>
             <Card>
@@ -57,7 +60,9 @@ export default function Home() {
                         <Button onClick={() => document.getElementById("files-upload-button")?.click()}>
                             Ajouter une ou des images
                         </Button>
-                        <Button type="submit">Upload</Button>
+                        <Button disabled={form.values.files.length === 0} type="submit">
+                            Upload
+                        </Button>
                     </Group>
                 </form>
                 <Space h="md" />
@@ -69,20 +74,55 @@ export default function Home() {
                 </Group>
             </Card>
             <Divider />
-            <Card>
-                Mes photos ({photos.length}) :
-                <Space h="md" />
-                <Group>
-                    {photos.map((photo) => (
-                        <img
-                            key={photo.id}
-                            width={100}
-                            src={`${config.pocketbase.photosUrl}/${photo.id}/${photo.file}`}
-                            alt={photo.name}
-                        />
-                    ))}
-                </Group>
-            </Card>
+            {isLoadingPhotos ? (
+                <Loader />
+            ) : (
+                <Card>
+                    {photos ? (
+                        <>
+                            <Text>Mes photos ({photos?.length}) :</Text>
+                            <Space h="md" />
+                            <Group>
+                                {photos.map((photo) => (
+                                    <img
+                                        key={photo.id}
+                                        width={100}
+                                        src={`${config.pocketbase.photosUrl}/${photo.id}/${photo.file}`}
+                                        alt={photo.name}
+                                    />
+                                ))}
+                            </Group>
+                        </>
+                    ) : (
+                        <Text>Aucune photo trouvée</Text>
+                    )}
+                </Card>
+            )}
+            <Divider />
+            {isLoadingAllPhotos ? (
+                <Loader />
+            ) : (
+                <Card>
+                    {allPhotos ? (
+                        <>
+                            <Text>Toutes les photos ({allPhotos?.length}) :</Text>
+                            <Space h="md" />
+                            <Group>
+                                {allPhotos.map((photo) => (
+                                    <img
+                                        key={photo.id}
+                                        width={100}
+                                        src={`${config.pocketbase.photosUrl}/${photo.id}/${photo.file}`}
+                                        alt={photo.name}
+                                    />
+                                ))}
+                            </Group>
+                        </>
+                    ) : (
+                        <Text>Aucune photo trouvée</Text>
+                    )}
+                </Card>
+            )}
         </Box>
     );
 }

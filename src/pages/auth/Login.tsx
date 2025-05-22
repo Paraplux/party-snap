@@ -19,9 +19,21 @@ import { upperFirst, useToggle } from "@mantine/hooks";
 import { useNavigate } from "react-router";
 export default function Auth(props: PaperProps) {
     const navigate = useNavigate();
-    const { mutate: login } = useLogin();
-    const { mutate: register } = useRegister();
-    const { mutate: oAuthLogin } = useOAuthLogin();
+    const { mutate: login } = useLogin({
+        onSuccess: () => {
+            navigate("/");
+        },
+    });
+    const { mutate: register } = useRegister({
+        onSuccess: () => {
+            navigate("/");
+        },
+    });
+    const { mutate: oAuthLogin } = useOAuthLogin({
+        onSuccess: () => {
+            navigate("/");
+        },
+    });
     const [type, toggle] = useToggle(["login", "register"]);
     const form = useForm({
         initialValues: {

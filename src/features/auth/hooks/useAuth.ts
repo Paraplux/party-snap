@@ -1,34 +1,52 @@
-import { authService, type AuthResponse } from "@/services/auth.pocketbase";
+import {
+    authService,
+    type AuthResponse,
+    type LoginPayload,
+    type OAuthLoginPayload,
+    type RegisterPayload,
+} from "@/services/auth.pocketbase";
 import { useMutation, useQuery, useQueryClient, type UseMutationOptions } from "@tanstack/react-query";
 
 const authQueryKey = ["auth"];
 
-export const useLogin = () => {
+export const useLogin = (options?: UseMutationOptions<AuthResponse, Error, LoginPayload>) => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: authService.login,
-        onSuccess: () => {
+        ...options,
+        onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries({ queryKey: authQueryKey });
+            if (options?.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
     });
 };
 
-export const useOAuthLogin = () => {
+export const useOAuthLogin = (options?: UseMutationOptions<AuthResponse, Error, OAuthLoginPayload>) => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: authService.oAuthLogin,
-        onSuccess: () => {
+        ...options,
+        onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries({ queryKey: authQueryKey });
+            if (options?.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
     });
 };
 
-export const useRegister = () => {
+export const useRegister = (options?: UseMutationOptions<AuthResponse, Error, RegisterPayload>) => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: authService.register,
-        onSuccess: () => {
+        ...options,
+        onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries({ queryKey: authQueryKey });
+            if (options?.onSuccess) {
+                options.onSuccess(data, variables, context);
+            }
         },
     });
 };
@@ -37,13 +55,13 @@ export const useLogout = (options?: UseMutationOptions<AuthResponse, Error, void
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: authService.logout,
+        ...options,
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries({ queryKey: authQueryKey });
             if (options?.onSuccess) {
                 options.onSuccess(data, variables, context);
             }
         },
-        ...options,
     });
 };
 
