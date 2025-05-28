@@ -101,6 +101,9 @@ export const Event = () => {
                 </Box>
             )}
             <Drawer
+                closeOnClickOutside
+                closeOnEscape
+                zIndex={210}
                 styles={{
                     content: {
                         borderRadius: "16px 16px 0 0",
