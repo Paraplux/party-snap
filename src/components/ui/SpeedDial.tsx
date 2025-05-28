@@ -22,6 +22,8 @@ export default function SpeedDial({ icon, items, style }: SpeedDialProps) {
                     style={{
                         width: 50,
                         height: 50,
+                        boxShadow:
+                            "0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)",
                     }}
                     onClick={() => setIsOpen(!isOpen)}
                 >
@@ -42,6 +44,10 @@ export default function SpeedDial({ icon, items, style }: SpeedDialProps) {
                                 radius="xl"
                                 size="xl"
                                 onClick={item.onClick}
+                                style={{
+                                    boxShadow:
+                                        "0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)",
+                                }}
                             >
                                 {item.icon}
                             </ActionIcon>
