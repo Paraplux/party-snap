@@ -1,9 +1,12 @@
 import { pb } from "./service.pocketbase";
 
 export const appService = {
-    users: pb.collection("users"),
+    eventsView: pb.collection("events_view"),
     events: pb.collection("events"),
+    eventTags: pb.collection("event_tags"),
+    guests: pb.collection("guests"),
     photos: pb.collection("photos"),
-    tags: pb.collection("tags"),
+    photoTags: pb.collection("photo_tags"),
+    users: pb.collection("users"),
     createBatch: () => pb.createBatch(),
 };

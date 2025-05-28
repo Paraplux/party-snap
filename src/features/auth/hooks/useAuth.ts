@@ -75,6 +75,6 @@ export const useAuth = () => {
 
     return {
         isAuthenticated: authState.isAuthenticated,
-        getCurrentUser: authService.getCurrentUser,
+        currentUser: authService.getCurrentUser(),
     };
 };

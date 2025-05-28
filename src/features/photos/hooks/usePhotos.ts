@@ -1,4 +1,5 @@
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import type { Event } from "@/features/events/hooks/useEvents";
+import type { Guest } from "@/features/guests/hooks/useGuests";
 import { appService } from "@/services/app.pocketbase";
 import { useMutation, useQuery, useQueryClient, type UseMutationOptions } from "@tanstack/react-query";
 
@@ -10,17 +11,17 @@ interface Photo {
 }
 
 interface UsePhotosParams {
-    userId?: string;
+    guestId?: string;
     eventId: string;
 }
 
 export const usePhotos = (params: UsePhotosParams) => {
     return useQuery({
-        queryKey: ["photos", params.userId, params.eventId],
+        queryKey: ["photos", params.guestId, params.eventId],
         queryFn: () => {
             let filter = "";
-            if (params?.userId) {
-                filter += `createdBy = "${params.userId}"`;
+            if (params?.guestId) {
+                filter += `createdBy = "${params.guestId}"`;
             }
             if (params?.eventId) {
                 if (filter) filter += " && ";
@@ -31,7 +32,7 @@ export const usePhotos = (params: UsePhotosParams) => {
                 requestKey: "photos-filtered",
             });
         },
-        enabled: !!(params?.userId || params?.eventId),
+        enabled: !!(params?.guestId || params?.eventId),
     });
 };
 
@@ -46,21 +47,21 @@ export const useAllPhotos = () => {
     });
 };
 
-type AddPhotoPayload = Pick<Photo, "name" | "tags"> & { file: File };
-export const useAddPhotos = (options?: UseMutationOptions<void, Error, AddPhotoPayload[]>) => {
+type AddPhotoPayload = {
+    guestId: Guest["id"];
+    eventId: Event["id"];
+    photos: PhotoPayload[];
+};
+type PhotoPayload = Pick<Photo, "name" | "tags"> & { file: File };
+export const useAddPhotos = (options?: UseMutationOptions<void, Error, AddPhotoPayload>) => {
     const queryClient = useQueryClient();
-    const { getCurrentUser } = useAuth();
-    const user = getCurrentUser();
     return useMutation({
-        mutationFn: async (photos: AddPhotoPayload[]) => {
-            if (!user) {
-                throw new Error("User not found");
-            }
-            for (const photo of photos) {
+        mutationFn: async (params: AddPhotoPayload) => {
+            for (const photo of params.photos) {
                 await appService.photos.create({
                     ...photo,
-                    createdBy: user.id,
-                    event: "652eo4n4309frgu",
+                    createdBy: params.guestId,
+                    event: params.eventId,
                 });
             }
         },

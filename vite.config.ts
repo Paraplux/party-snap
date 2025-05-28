@@ -9,6 +9,7 @@ export default defineConfig({
             "@": "/src",
             "@features": "/src/features",
             "@services": "/src/services",
+            "@tabler/icons-react": "@tabler/icons-react/dist/esm/icons/index.mjs",
         },
     },
 });

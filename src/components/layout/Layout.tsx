@@ -1,5 +1,6 @@
+import { config } from "@/app/config";
 import { useAuth, useLogout } from "@/features/auth/hooks/useAuth";
-import { Badge, Box } from "@mantine/core";
+import { Avatar, Box, Button, Group, Text } from "@mantine/core";
 import { Outlet, useNavigate } from "react-router";
 
 export default function Layout() {
@@ -9,25 +10,21 @@ export default function Layout() {
             navigate("/auth");
         },
     });
-    const { isAuthenticated } = useAuth();
+    const { currentUser } = useAuth();
 
     return (
-        <Box pos="relative">
-            <Badge
-                styles={{
-                    root: {
-                        zIndex: 1000,
-                        cursor: "pointer",
-                    },
-                }}
-                onClick={() => logout()}
-                pos="absolute"
-                top={4}
-                right={4}
-                color={isAuthenticated ? "green" : "red"}
-            >
-                {isAuthenticated ? "Authenticated" : "Not Authenticated"}
-            </Badge>
+        <Box>
+            {currentUser && (
+                <Group justify="flex-end">
+                    <Group>
+                        <Avatar src={`${config.pocketbase.avatarUrl}/${currentUser.id}/${currentUser.avatar}`} />
+                        <Text>
+                            {currentUser.name} ({currentUser.email})
+                        </Text>
+                    </Group>
+                    <Button onClick={() => logout()}>Logout</Button>
+                </Group>
+            )}
             <Outlet />
         </Box>
     );
