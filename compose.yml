@@ -10,15 +10,19 @@ services:
     image: ghcr.io/muchobien/pocketbase:latest
     restart: unless-stopped
     ports:
-      - "8092:8090"
+      - "8090:8090"
     volumes:
       - pocketbase_data:/pb_data
       - pocketbase_public:/pb_public
     healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://127.0.0.1:8092/api/health || exit 1
+      test: wget --no-verbose --tries=1 --spider http://127.0.0.1:8090/api/health || exit 1
       interval: 5s
       timeout: 5s
       retries: 5
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pocketbase.rule=Host(`api.partysnap.uggyboogie.fr`)"
+      - "traefik.http.services.pocketbase.loadbalancer.server.port=8090"
 
 volumes:
   pocketbase_data:
