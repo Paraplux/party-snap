@@ -6,11 +6,12 @@ import { useGuest } from "@/features/guests/hooks/useGuests";
 import { EventHeader } from "./components/EventHeader";
 import { ActionIcon, Box, Button, Drawer, Image, Loader, Space, Text } from "@mantine/core";
 import { Center } from "@mantine/core";
-import { IconTrash, IconPlus } from "@tabler/icons-react";
+import { IconTrash, IconPlus, IconCamera, IconPhoto } from "@tabler/icons-react";
 import { useState } from "react";
 import { useAddPhotos, useAllEventPhotos } from "@/features/photos/hooks/usePhotos";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { config } from "@/app/config";
+import SpeedDial from "@/components/ui/SpeedDial";
 
 export const Event = () => {
     const { eventId } = useParams<{ eventId: string }>();
@@ -43,37 +44,21 @@ export const Event = () => {
         return <EventNotFound />;
     }
 
-    const handleFileSelection = async () => {
-        try {
-            // @ts-ignore - showOpenFilePicker n'est pas encore dans les types TypeScript
-            const handles = await window.showOpenFilePicker({
-                multiple: true,
-                types: [
-                    {
-                        description: "Images",
-                        accept: {
-                            "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"],
-                        },
-                    },
-                ],
-                excludeAcceptAllOption: true,
-                startIn: "pictures",
-            });
+    const handleCameraSelection = () => {
+        const input = document.getElementById("photo-input") as HTMLInputElement;
+        if (input) {
+            input.setAttribute("capture", "environment");
+            input.click();
+            // On retire capture après le clic pour le prochain choix
+            setTimeout(() => input.removeAttribute("capture"), 100);
+        }
+    };
 
-            const files = await Promise.all(
-                handles.map(async (handle: FileSystemFileHandle) => {
-                    const file = await handle.getFile();
-                    return file;
-                }),
-            );
-
-            setPhotos(files);
-        } catch (err) {
-            // Si l'API n'est pas supportée (Safari, anciens navigateurs), on utilise l'input classique
-            const input = document.getElementById("photo-input") as HTMLInputElement;
-            if (input) {
-                input.click();
-            }
+    const handleGallerySelection = () => {
+        const input = document.getElementById("photo-input") as HTMLInputElement;
+        if (input) {
+            input.removeAttribute("capture");
+            input.click();
         }
     };
 
@@ -178,17 +163,19 @@ export const Event = () => {
                     ))}
                 </Box>
             </Drawer>
-            <Button
-                leftSection={<IconPlus size={16} />}
-                onClick={handleFileSelection}
-                pos="fixed"
-                bottom={32}
-                right={32}
-                radius="xl"
-                size="lg"
-            >
-                Ajouter des photos
-            </Button>
+            <SpeedDial
+                icon={<IconPlus />}
+                items={[
+                    {
+                        icon: <IconCamera size={16} />,
+                        onClick: handleCameraSelection,
+                    },
+                    {
+                        icon: <IconPhoto size={16} />,
+                        onClick: handleGallerySelection,
+                    },
+                ]}
+            />
 
             <input
                 style={{ display: "none" }}
