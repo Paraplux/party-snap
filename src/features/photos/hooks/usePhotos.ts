@@ -36,14 +36,19 @@ export const usePhotos = (params: UsePhotosParams) => {
     });
 };
 
-export const useAllPhotos = () => {
+export const useAllEventPhotos = (eventId: Event["id"] | undefined) => {
     return useQuery({
-        queryKey: ["photos", "all", "all"],
+        queryKey: ["photos", "all", eventId],
         queryFn: () => {
+            if (!eventId) {
+                throw new Error("Event ID is required");
+            }
             return appService.photos.getFullList({
-                requestKey: "photos-all",
+                filter: `event = "${eventId}"`,
+                requestKey: "photos-all-event",
             });
         },
+        enabled: !!eventId,
     });
 };
 

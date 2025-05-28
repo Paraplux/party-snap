@@ -8,8 +8,8 @@ interface EventHeaderProps {
 
 export const EventHeader = ({ event }: EventHeaderProps) => {
     return (
-        <Box pos="relative">
-            <Image src={tmpEventHeader} alt={event.name} height={180} />
+        <Box pos="sticky" top={0} style={{ zIndex: 1000 }}>
+            <Image src={tmpEventHeader} alt={event.name} height={140} />
             <Center
                 style={{
                     position: "absolute",

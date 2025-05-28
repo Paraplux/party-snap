@@ -8,7 +8,7 @@ import { ActionIcon, Box, Button, Drawer, Image, Loader, Space, Text } from "@ma
 import { Center } from "@mantine/core";
 import { IconCamera, IconTrash } from "@tabler/icons-react";
 import { useState } from "react";
-import { useAddPhotos, useAllPhotos } from "@/features/photos/hooks/usePhotos";
+import { useAddPhotos, useAllEventPhotos } from "@/features/photos/hooks/usePhotos";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { config } from "@/app/config";
 
@@ -19,7 +19,7 @@ export const Event = () => {
 
     const { data: guest, isLoading: isGuestLoading } = useGuest(eventId, cookies[`guest_id_${eventId}`]);
     const { data: event, isLoading: isEventLoading } = useEvent(eventId);
-    const { data: allPhotos, isLoading: isPhotosLoading } = useAllPhotos();
+    const { data: allPhotos, isLoading: isPhotosLoading } = useAllEventPhotos(eventId);
 
     const { mutate: addPhotos } = useAddPhotos({
         onSuccess: () => {
@@ -27,7 +27,7 @@ export const Event = () => {
         },
     });
 
-    if (isGuestLoading || isEventLoading || isPhotosLoading) {
+    if (isGuestLoading || isEventLoading || isPhotosLoading || !allPhotos) {
         return (
             <Center h="100vh">
                 <Loader />
@@ -56,22 +56,31 @@ export const Event = () => {
     };
 
     return (
-        <Box pos="relative" h="100vh">
+        <Box>
             <EventHeader event={event} />
             <Space h="md" />
-            <Box p="xs">
-                <ResponsiveMasonry columnsCountBreakPoints={{ 750: 3, 900: 4 }}>
-                    <Masonry>
-                        {allPhotos?.map((photo) => (
-                            <Image
-                                key={photo.id}
-                                src={`${config.pocketbase.photosUrl}/${photo.id}/${photo.file}`}
-                                alt="Photo"
-                            />
-                        ))}
-                    </Masonry>
-                </ResponsiveMasonry>
-            </Box>
+            {allPhotos.length > 0 ? (
+                <Box p="xs">
+                    <ResponsiveMasonry columnsCountBreakPoints={{ 750: 3, 900: 4 }}>
+                        <Masonry>
+                            {allPhotos?.map((photo) => (
+                                <Image
+                                    key={photo.id}
+                                    src={`${config.pocketbase.photosUrl}/${photo.id}/${photo.file}`}
+                                    alt="Photo"
+                                />
+                            ))}
+                        </Masonry>
+                    </ResponsiveMasonry>
+                </Box>
+            ) : (
+                <Box p="xs">
+                    <Space h="xl" />
+                    <Text ta="center" size="sm" c="dimmed">
+                        Aucune photo trouvée. Ajoutez des photos pour commencer.
+                    </Text>
+                </Box>
+            )}
             <Drawer
                 styles={{
                     content: {
@@ -152,11 +161,14 @@ export const Event = () => {
             <ActionIcon
                 variant="filled"
                 aria-label="Take a photo"
-                pos="absolute"
+                pos="fixed"
                 bottom={32}
                 right={32}
                 size="xl"
                 radius="xl"
+                style={{
+                    boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.3)",
+                }}
                 onClick={() => {
                     const input = document.getElementById("photo-input");
                     if (input) {
