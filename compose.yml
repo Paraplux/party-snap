@@ -1,4 +1,11 @@
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+
   pocketbase:
     image: ghcr.io/muchobien/pocketbase:latest
     restart: unless-stopped
