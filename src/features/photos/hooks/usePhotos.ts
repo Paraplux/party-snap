@@ -45,6 +45,7 @@ export const useAllEventPhotos = (eventId: Event["id"] | undefined) => {
             }
             return appService.photos.getFullList({
                 filter: `event = "${eventId}"`,
+                sort: "-createdAt",
                 requestKey: "photos-all-event",
             });
         },
