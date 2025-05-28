@@ -6,7 +6,7 @@ import { useGuest } from "@/features/guests/hooks/useGuests";
 import { EventHeader } from "./components/EventHeader";
 import { ActionIcon, Box, Button, Drawer, Image, Loader, Space, Text } from "@mantine/core";
 import { Center } from "@mantine/core";
-import { IconCamera, IconTrash } from "@tabler/icons-react";
+import { IconTrash, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import { useAddPhotos, useAllEventPhotos } from "@/features/photos/hooks/usePhotos";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
@@ -42,6 +42,40 @@ export const Event = () => {
     if (!event) {
         return <EventNotFound />;
     }
+
+    const handleFileSelection = async () => {
+        try {
+            // @ts-ignore - showOpenFilePicker n'est pas encore dans les types TypeScript
+            const handles = await window.showOpenFilePicker({
+                multiple: true,
+                types: [
+                    {
+                        description: "Images",
+                        accept: {
+                            "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"],
+                        },
+                    },
+                ],
+                excludeAcceptAllOption: true,
+                startIn: "pictures",
+            });
+
+            const files = await Promise.all(
+                handles.map(async (handle: FileSystemFileHandle) => {
+                    const file = await handle.getFile();
+                    return file;
+                }),
+            );
+
+            setPhotos(files);
+        } catch (err) {
+            // Si l'API n'est pas supportée (Safari, anciens navigateurs), on utilise l'input classique
+            const input = document.getElementById("photo-input") as HTMLInputElement;
+            if (input) {
+                input.click();
+            }
+        }
+    };
 
     const handleAddPhotos = () => {
         addPhotos({
@@ -144,13 +178,24 @@ export const Event = () => {
                     ))}
                 </Box>
             </Drawer>
+            <Button
+                leftSection={<IconPlus size={16} />}
+                onClick={handleFileSelection}
+                pos="fixed"
+                bottom={32}
+                right={32}
+                radius="xl"
+                size="lg"
+            >
+                Ajouter des photos
+            </Button>
+
             <input
                 style={{ display: "none" }}
                 multiple
                 id="photo-input"
                 type="file"
                 accept="image/*"
-                capture="environment"
                 onChange={(e) => {
                     const files = e.target.files;
                     if (files) {
@@ -158,26 +203,6 @@ export const Event = () => {
                     }
                 }}
             />
-            <ActionIcon
-                variant="filled"
-                aria-label="Take a photo"
-                pos="fixed"
-                bottom={32}
-                right={32}
-                size="xl"
-                radius="xl"
-                style={{
-                    boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.3)",
-                }}
-                onClick={() => {
-                    const input = document.getElementById("photo-input");
-                    if (input) {
-                        input.click();
-                    }
-                }}
-            >
-                <IconCamera style={{ width: "70%", height: "70%" }} stroke={1.5} />
-            </ActionIcon>
         </Box>
     );
 };
