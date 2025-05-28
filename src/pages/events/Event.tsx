@@ -101,8 +101,8 @@ export const Event = () => {
                 </Box>
             )}
             <Drawer
-                closeOnClickOutside
-                closeOnEscape
+                closeOnClickOutside={true}
+                closeOnEscape={true}
                 zIndex={210}
                 styles={{
                     content: {
@@ -111,7 +111,7 @@ export const Event = () => {
                 }}
                 position="bottom"
                 opened={photos.length > 0}
-                onClose={() => null}
+                onClose={() => setPhotos([])}
                 withCloseButton={false}
             >
                 <Box
