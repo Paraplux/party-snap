@@ -22,18 +22,18 @@ export default function EventAddPhoto({ guest, event }: EventAddPhotoProps) {
         },
     });
 
-    const handleGallerySelection = () => {
-        const input = document.getElementById("photo-input-gallery") as HTMLInputElement;
-        if (input) {
-            input.click();
-        }
-    };
-    // const handleCameraSelection = () => {
-    //     const input = document.getElementById("photo-input-camera") as HTMLInputElement;
+    // const handleGallerySelection = () => {
+    //     const input = document.getElementById("photo-input-gallery") as HTMLInputElement;
     //     if (input) {
     //         input.click();
     //     }
     // };
+    const handleCameraSelection = () => {
+        const input = document.getElementById("photo-input-camera") as HTMLInputElement;
+        if (input) {
+            input.click();
+        }
+    };
 
     const handleAddPhotos = () => {
         addPhotos({
@@ -128,7 +128,7 @@ export default function EventAddPhoto({ guest, event }: EventAddPhotoProps) {
                     ))}
                 </Box>
             </Drawer>
-            <SpeedDial icon={<IconPlus />} items={[]} onClick={handleGallerySelection} />
+            <SpeedDial icon={<IconPlus />} items={[]} onClick={handleCameraSelection} />
 
             <input
                 style={{ display: "none" }}
