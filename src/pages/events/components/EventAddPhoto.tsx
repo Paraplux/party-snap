@@ -87,7 +87,7 @@ export default function EventAddPhoto({ guest, event }: EventAddPhotoProps) {
                     </Button>
                 </Box>
                 <Space h="md" />
-                <Box>
+                <Box style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                     {photos.map((photo) => (
                         <Box component="span" pos="relative" key={photo.name} style={{ display: "inline-block" }}>
                             <Image src={URL.createObjectURL(photo)} alt="Photo" style={{ width: 120, height: 120 }} />
