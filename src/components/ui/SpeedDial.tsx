@@ -31,7 +31,7 @@ export default function SpeedDial({ icon, items, style, onClick }: SpeedDialProp
                         if (onClick) {
                             onClick();
                         } else {
-                            setIsOpen(!isOpen);
+                            setIsOpen((prev) => !prev);
                         }
                     }}
                 >
@@ -53,7 +53,10 @@ export default function SpeedDial({ icon, items, style, onClick }: SpeedDialProp
                                     color="dark"
                                     radius="xl"
                                     size="xl"
-                                    onClick={item.onClick}
+                                    onClick={() => {
+                                        item.onClick();
+                                        setIsOpen(false);
+                                    }}
                                     style={{
                                         boxShadow:
                                             "0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)",
