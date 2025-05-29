@@ -79,7 +79,7 @@ export default function EventAddPhoto({ guest, event }: EventAddPhotoProps) {
                             opacity: 0.7,
                         }}
                     />
-                    <Button variant="subtle" onClick={() => setPhotos([])}>
+                    <Button variant="subtle" color="red" onClick={() => setPhotos([])}>
                         Annuler
                     </Button>
                     <Button variant="subtle" onClick={handleAddPhotos}>
