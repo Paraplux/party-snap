@@ -5,12 +5,14 @@ interface SpeedDialProps {
     icon: React.ReactNode;
     items?: {
         icon: React.ReactNode;
+        visible: boolean;
         onClick: () => void;
     }[];
+    onClick?: () => void;
     style?: MantineStyleProp;
 }
 
-export default function SpeedDial({ icon, items, style }: SpeedDialProps) {
+export default function SpeedDial({ icon, items, style, onClick }: SpeedDialProps) {
     const [isOpen, setIsOpen] = useState(false);
     return (
         <Affix style={{ ...style }} position={{ bottom: 20, right: 20 }}>
@@ -25,7 +27,13 @@ export default function SpeedDial({ icon, items, style }: SpeedDialProps) {
                         boxShadow:
                             "0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)",
                     }}
-                    onClick={() => setIsOpen(!isOpen)}
+                    onClick={() => {
+                        if (onClick) {
+                            onClick();
+                        } else {
+                            setIsOpen(!isOpen);
+                        }
+                    }}
                 >
                     {icon}
                 </ActionIcon>
@@ -36,22 +44,24 @@ export default function SpeedDial({ icon, items, style }: SpeedDialProps) {
                         right={4}
                         style={{ display: "flex", flexDirection: "column", gap: 8 }}
                     >
-                        {items.map((item, index) => (
-                            <ActionIcon
-                                key={`speed-dial-item-${index}`}
-                                variant="filled"
-                                color="dark"
-                                radius="xl"
-                                size="xl"
-                                onClick={item.onClick}
-                                style={{
-                                    boxShadow:
-                                        "0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)",
-                                }}
-                            >
-                                {item.icon}
-                            </ActionIcon>
-                        ))}
+                        {items
+                            .filter((item) => item.visible)
+                            .map((item, index) => (
+                                <ActionIcon
+                                    key={`speed-dial-item-${index}`}
+                                    variant="filled"
+                                    color="dark"
+                                    radius="xl"
+                                    size="xl"
+                                    onClick={item.onClick}
+                                    style={{
+                                        boxShadow:
+                                            "0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)",
+                                    }}
+                                >
+                                    {item.icon}
+                                </ActionIcon>
+                            ))}
                     </Box>
                 )}
             </Box>
