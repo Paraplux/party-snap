@@ -37,5 +37,11 @@ export default function useMobile(): PlatformInfo {
         return () => window.removeEventListener("resize", checkPlatform);
     }, []);
 
-    return platformInfo;
+    return {
+        isMobile: platformInfo.isMobile,
+        isIOS: platformInfo.isIOS,
+        isAndroid: platformInfo.isAndroid,
+        isDesktop: platformInfo.isDesktop,
+        userAgent: platformInfo.userAgent,
+    };
 }

@@ -131,17 +131,18 @@ export default function EventAddPhoto({ guest, event }: EventAddPhotoProps) {
             <SpeedDial
                 icon={<IconPlus />}
                 items={isAndroid ? actions : []}
-                onClick={() => {
-                    if (isAndroid) {
-                        return undefined;
-                    }
-                    if (isIOS) {
-                        handleCameraSelection();
-                    }
-                    if (isDesktop) {
-                        handleGallerySelection();
-                    }
-                }}
+                onClick={
+                    isAndroid
+                        ? undefined
+                        : () => {
+                              if (isIOS) {
+                                  handleCameraSelection();
+                              }
+                              if (isDesktop) {
+                                  handleGallerySelection();
+                              }
+                          }
+                }
             />
 
             <input
