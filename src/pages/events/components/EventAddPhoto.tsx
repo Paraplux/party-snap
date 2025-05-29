@@ -1,11 +1,10 @@
-import { ActionIcon, Box, Button, Image, Space, Text, Drawer } from "@mantine/core";
+import { ActionIcon, Box, Button, Image, Space, Drawer } from "@mantine/core";
 import type { Event } from "@/features/events/hooks/useEvents";
 import type { Guest } from "@/features/guests/hooks/useGuests";
 import { useAddPhotos } from "@/features/photos/hooks/usePhotos";
 import { useState } from "react";
-import { /*IconCamera, IconPhoto, */ IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconPlus, IconTrash } from "@tabler/icons-react";
 import SpeedDial from "@/components/ui/SpeedDial";
-// import useMobile from "@/components/hooks/useMobile";
 
 interface EventAddPhotoProps {
     guest: Guest;
@@ -14,7 +13,6 @@ interface EventAddPhotoProps {
 
 export default function EventAddPhoto({ guest, event }: EventAddPhotoProps) {
     const [photos, setPhotos] = useState<File[]>([]);
-    // const { isMobile, isDesktop } = useMobile();
 
     const { mutate: addPhotos } = useAddPhotos({
         onSuccess: () => {
@@ -22,12 +20,6 @@ export default function EventAddPhoto({ guest, event }: EventAddPhotoProps) {
         },
     });
 
-    // const handleGallerySelection = () => {
-    //     const input = document.getElementById("photo-input-gallery") as HTMLInputElement;
-    //     if (input) {
-    //         input.click();
-    //     }
-    // };
     const handleCameraSelection = () => {
         const input = document.getElementById("photo-input-camera") as HTMLInputElement;
         if (input) {
@@ -46,19 +38,6 @@ export default function EventAddPhoto({ guest, event }: EventAddPhotoProps) {
             })),
         });
     };
-
-    // const actions = [
-    //     {
-    //         icon: <IconCamera size={16} />,
-    //         visible: isAndroid,
-    //         onClick: handleCameraSelection,
-    //     },
-    //     {
-    //         icon: <IconPhoto size={16} />,
-    //         visible: isAndroid,
-    //         onClick: handleGallerySelection,
-    //     },
-    // ];
 
     return (
         <>
@@ -100,9 +79,9 @@ export default function EventAddPhoto({ guest, event }: EventAddPhotoProps) {
                             opacity: 0.7,
                         }}
                     />
-                    <Text size="sm" c="dimmed">
-                        {photos.length} photo{photos.length > 1 ? "s" : ""} sélectionnée{photos.length > 1 ? "s" : ""}
-                    </Text>
+                    <Button variant="subtle" onClick={() => setPhotos([])}>
+                        Annuler
+                    </Button>
                     <Button variant="subtle" onClick={handleAddPhotos}>
                         Confirmer
                     </Button>
