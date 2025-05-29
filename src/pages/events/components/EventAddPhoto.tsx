@@ -14,7 +14,7 @@ interface EventAddPhotoProps {
 
 export default function EventAddPhoto({ guest, event }: EventAddPhotoProps) {
     const [photos, setPhotos] = useState<File[]>([]);
-    const { isAndroid, isIOS, isDesktop } = useMobile();
+    // const { isMobile, isDesktop } = useMobile();
 
     const { mutate: addPhotos } = useAddPhotos({
         onSuccess: () => {
@@ -47,18 +47,18 @@ export default function EventAddPhoto({ guest, event }: EventAddPhotoProps) {
         });
     };
 
-    const actions = [
-        {
-            icon: <IconCamera size={16} />,
-            visible: isAndroid,
-            onClick: handleCameraSelection,
-        },
-        {
-            icon: <IconPhoto size={16} />,
-            visible: isAndroid,
-            onClick: handleGallerySelection,
-        },
-    ];
+    // const actions = [
+    //     {
+    //         icon: <IconCamera size={16} />,
+    //         visible: isAndroid,
+    //         onClick: handleCameraSelection,
+    //     },
+    //     {
+    //         icon: <IconPhoto size={16} />,
+    //         visible: isAndroid,
+    //         onClick: handleGallerySelection,
+    //     },
+    // ];
 
     return (
         <>
@@ -128,22 +128,7 @@ export default function EventAddPhoto({ guest, event }: EventAddPhotoProps) {
                     ))}
                 </Box>
             </Drawer>
-            <SpeedDial
-                icon={<IconPlus />}
-                items={isAndroid ? actions : []}
-                onClick={
-                    isAndroid
-                        ? undefined
-                        : () => {
-                              if (isIOS) {
-                                  handleCameraSelection();
-                              }
-                              if (isDesktop) {
-                                  handleGallerySelection();
-                              }
-                          }
-                }
-            />
+            <SpeedDial icon={<IconPlus />} items={[]} onClick={handleGallerySelection} />
 
             <input
                 style={{ display: "none" }}
