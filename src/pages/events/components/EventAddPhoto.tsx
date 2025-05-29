@@ -3,9 +3,9 @@ import type { Event } from "@/features/events/hooks/useEvents";
 import type { Guest } from "@/features/guests/hooks/useGuests";
 import { useAddPhotos } from "@/features/photos/hooks/usePhotos";
 import { useState } from "react";
-import { IconCamera, IconPhoto, IconPlus, IconTrash } from "@tabler/icons-react";
+import { /*IconCamera, IconPhoto, */ IconPlus, IconTrash } from "@tabler/icons-react";
 import SpeedDial from "@/components/ui/SpeedDial";
-import useMobile from "@/components/hooks/useMobile";
+// import useMobile from "@/components/hooks/useMobile";
 
 interface EventAddPhotoProps {
     guest: Guest;
@@ -28,12 +28,12 @@ export default function EventAddPhoto({ guest, event }: EventAddPhotoProps) {
             input.click();
         }
     };
-    const handleCameraSelection = () => {
-        const input = document.getElementById("photo-input-camera") as HTMLInputElement;
-        if (input) {
-            input.click();
-        }
-    };
+    // const handleCameraSelection = () => {
+    //     const input = document.getElementById("photo-input-camera") as HTMLInputElement;
+    //     if (input) {
+    //         input.click();
+    //     }
+    // };
 
     const handleAddPhotos = () => {
         addPhotos({
