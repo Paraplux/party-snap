@@ -3,7 +3,7 @@ import type { Guest } from "@/features/guests/hooks/useGuests";
 import { appService } from "@/services/app.pocketbase";
 import { useMutation, useQuery, useQueryClient, type UseMutationOptions } from "@tanstack/react-query";
 
-interface Photo {
+export interface Photo {
     id: string;
     name: string;
     file: File;
@@ -43,7 +43,7 @@ export const useAllEventPhotos = (eventId: Event["id"] | undefined) => {
             if (!eventId) {
                 throw new Error("Event ID is required");
             }
-            return appService.photos.getFullList({
+            return appService.photos.getFullList<Photo>({
                 filter: `event = "${eventId}"`,
                 sort: "-createdAt",
                 requestKey: "photos-all-event",
